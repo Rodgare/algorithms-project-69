@@ -19,5 +19,8 @@
     "require-dev": {
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^11.5"
+    },
+    "require": {
+        "illuminate/collections": "^11.35"
     }
 }

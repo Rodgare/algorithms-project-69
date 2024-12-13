@@ -7,10 +7,12 @@ function search(array $arr, string $word): array
     $res = [];
     foreach ($arr as $v) {
         $arrWords = explode(' ', $v['text']);
-        if (in_array($word, $arrWords)) {
-            $res[] = $v['id'];
+        foreach ($arrWords as $w) {
+            if (trim($w, '!`') === trim($word, '!`')) {
+                $res[] = $v['id'];
+            }
         }
     }
 
-    return $res;
+    return array_unique($res);
 }
