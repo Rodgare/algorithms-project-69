@@ -1,2 +1,3 @@
-### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Rodgare/algorithms-project-69/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Rodgare/algorithms-project-69/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ae79383b0ce52fb6277c/maintainability)](https://codeclimate.com/github/Rodgare/algorithms-project-69/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ae79383b0ce52fb6277c/test_coverage)](https://codeclimate.com/github/Rodgare/algorithms-project-69/test_coverage)

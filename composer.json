@@ -1,0 +1,23 @@
+{
+    "name": "hexlet/code",
+    "autoload": {
+        "files": ["src/index.php"],
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "autoload-dev": {
+    "psr-4": {
+      "Hexlet\\Code\\": "tests/"
+    }
+  },
+    "authors": [
+        {
+            "name": "me"
+        }
+    ],
+    "require-dev": {
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.5"
+    }
+}
