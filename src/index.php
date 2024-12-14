@@ -48,7 +48,7 @@ function search(array $docs, string $query): array
     $queryTF = array_count_values($queryTokens);
     $totalQueryTokens = count($queryTokens);
     foreach ($queryTF as &$freq) {
-        $freq /= $totalQueryTokens; 
+        $freq /= $totalQueryTokens;
     }
 
     $queryTFIDF = [];
@@ -83,4 +83,3 @@ function search(array $docs, string $query): array
 
     return array_keys($docScores);
 }
-
