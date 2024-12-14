@@ -18,7 +18,7 @@ class Test extends TestCase
             ['id' => 'doc2', 'text' => $doc2],
             ['id' => 'doc3', 'text' => $doc3],
         ];
-        
-        $this->assertEquals(['doc2', 'doc1'], search($docs, 'shoot!'));
+
+        $this->assertEquals(['doc2', 'doc1'], search($docs, 'shoot at me!'));
     }
 }
