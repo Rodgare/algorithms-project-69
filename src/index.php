@@ -4,82 +4,43 @@ namespace App;
 
 function tokenize(string $text): array
 {
-    return preg_split('/\W+/', strtolower($text), -1, PREG_SPLIT_NO_EMPTY);
+  return preg_split('/\W+/', strtolower($text), -1, PREG_SPLIT_NO_EMPTY);
 }
 
-function buildIndexAndIDF(array $docs): array
+function buildIndex($docs, $q)
 {
-    $index = [];
-    $idf = [];
-    $docCount = count($docs);
+  $index = [];
+  $tokQ = tokenize($q);
+  foreach ($docs as $doc) {
+    $count = array_count_values(tokenize($doc['text']));
+    foreach ($tokQ as $token) {
 
-    foreach ($docs as $doc) {
-        $docTokens = tokenize($doc['text']);
-        $uniqueTokens = array_unique($docTokens);
-
-        foreach ($docTokens as $token) {
-            if (!isset($index[$doc['id']][$token])) {
-                $index[$doc['id']][$token] = 0;
-            }
-            $index[$doc['id']][$token] += 1;
-        }
-
-        foreach ($uniqueTokens as $token) {
-            if (!isset($idf[$token])) {
-                $idf[$token] = 0;
-            }
-            $idf[$token] += 1;
-        }
+      if (isset($count[$token]) && isset($index[$doc['id']])) {
+        $index[$doc['id']] += $count[$token];
+      } else if (isset($count[$token])) {
+        $index[$doc['id']] = $count[$token];
+      }
+      
     }
+  }
 
-    foreach ($idf as $token => &$value) {
-        $value = log($docCount / $value);
-    }
-
-    return [$index, $idf];
+  return $index;
 }
 
-
-function search(array $docs, string $query): array
+function calcIDF($docs, $q)
 {
-    [$tfIndex, $idf] = buildIndexAndIDF($docs);
-    $queryTokens = tokenize($query);
+  $index = buildIndex($docs, $q);
+  if ($index === []) return [];
+  $idf = log10(count($docs) / count($index));
+  foreach ($index as $docId => $tf) {
+    $index[$docId] = $tf * $idf;
+  }
+  arsort($index);
+  return array_keys($index);
+}
 
-    $queryTF = array_count_values($queryTokens);
-    $totalQueryTokens = count($queryTokens);
-    foreach ($queryTF as &$freq) {
-        $freq /= $totalQueryTokens;
-    }
-
-    $queryTFIDF = [];
-    foreach ($queryTokens as $token) {
-        $queryTFIDF[$token] = ($queryTF[$token] ?? 0) * ($idf[$token] ?? 0);
-    }
-
-    $docScores = [];
-    foreach ($tfIndex as $docId => $docTokens) {
-        $docTFIDF = [];
-        foreach ($docTokens as $token => $tf) {
-            $docTFIDF[$token] = $tf * ($idf[$token] ?? 0);
-        }
-
-        $dotProduct = 0;
-        $normQuery = 0;
-        $normDoc = 0;
-
-        foreach ($queryTFIDF as $token => $queryWeight) {
-            $docWeight = $docTFIDF[$token] ?? 0;
-            $dotProduct += $queryWeight * $docWeight;
-            $normQuery += $queryWeight ** 2;
-            $normDoc += $docWeight ** 2;
-        }
-
-        if ($normQuery > 0 && $normDoc > 0) {
-            $docScores[$docId] = $dotProduct / (sqrt($normQuery) * sqrt($normDoc));
-        }
-    }
-
-    arsort($docScores);
-
-    return array_keys($docScores);
+function search($docs, $q)
+{
+  if ($q === '') return [];
+  return calcIDF($docs, $q);
 }
